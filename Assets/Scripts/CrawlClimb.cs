@@ -56,7 +56,9 @@ public class CrawlClimb : MonoBehaviour {
 	void FixedUpdate () {
 
         /* HAND VELOCITY MOVEMENT */
-        //get_speed();
+        get_speed(true);
+
+        curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
 
         /* TURN PLAYER */
         if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
@@ -70,7 +72,6 @@ public class CrawlClimb : MonoBehaviour {
         /* FOLLOWING IS FOR CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING */
         /*
         Vector3 rvel = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
-        curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
         
         if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) >= 0.95 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger) >= 0.95) {
             if (TriggerdL.triggered) {
@@ -105,8 +106,8 @@ public class CrawlClimb : MonoBehaviour {
         }
         prev_lhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
         prev_rhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-
+        */
         prev_lpos = curr_lpos;
-        prev_rpos = curr_rpos;*/
+        prev_rpos = curr_rpos;
     }
 }
