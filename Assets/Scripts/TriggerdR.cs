@@ -7,6 +7,15 @@ public class TriggerdR : MonoBehaviour {
     public static Vector3 rContact;
     bool contact_point = false;
 
+    // OPTIONAL
+    [SerializeField] private Transform m_RealHand;
+    [SerializeField] private Transform m_Body;
+
+    // CORE
+    [SerializeField] private float baseDistance = .2f;
+    [SerializeField] private float criticalDist = 1f;
+    [SerializeField] private float secondCriticalDist = 1.52f;
+
     void OnTriggerEnter(Collider other) {
         if (!contact_point) {
             RaycastHit hit;
@@ -22,4 +31,35 @@ public class TriggerdR : MonoBehaviour {
         triggered = false;
         rContact = Vector3.zero;
     }
+
+    // OPTIONAL: adjust the hand position
+    void GogoAdjust() {
+        //float distance = Vector3.Magnitude(m_RealHand.position - m_Body.position);
+        OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
+        float distance = Vector3.Distance(m_RealHand.position, m_Body.position);
+        Debug.Log("hp " + m_RealHand.position + " mp " + m_Body.position + " " + distance);
+        transform.localPosition = new Vector3(
+            0f,
+            0f,
+            GogoFunction(distance) + baseDistance
+        );
+    }
+
+    // CORE: get the adjusted position
+    float GogoFunction(float distance) {
+        if (distance < criticalDist)
+            return 0;
+
+        float firstDist = (distance - criticalDist) * 20f;
+        Debug.Log("firstdist " + firstDist);
+        if (distance < secondCriticalDist)
+            return firstDist;
+        Debug.Log("seconddist " + (firstDist + (distance - secondCriticalDist) * 40f));
+        return (firstDist + (distance - secondCriticalDist) * 40f);
+    }
+
+    void Update() {
+        GogoAdjust();   // OPTIONAL
+    }
+
 }
