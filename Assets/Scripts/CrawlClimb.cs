@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 public class CrawlClimb : MonoBehaviour {
 
@@ -8,6 +9,7 @@ public class CrawlClimb : MonoBehaviour {
     public Transform right_hand;
     public Transform player;
     public Transform center_eye;
+    public Transform camera;
 
     Vector3 prev_lpos;
     Vector3 prev_rpos;
@@ -66,7 +68,11 @@ public class CrawlClimb : MonoBehaviour {
 
             Vector3 rot = player.rotation.eulerAngles;
             rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
-            player.rotation = Quaternion.Euler(rot.x, rot.y, rot.z);   
+            player.rotation = Quaternion.Euler(rot.x, rot.y, rot.z);
+            camera.GetComponent<PostProcessingBehaviour>().enabled = true;
+        }
+        else {
+            camera.GetComponent<PostProcessingBehaviour>().enabled = false;
         }
 
         /* FOLLOWING IS FOR CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING */
