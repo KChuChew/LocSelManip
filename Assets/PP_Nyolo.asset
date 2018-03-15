@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a3bdb2cd68f901469e7cc149151eb49, type: 3}
-  m_Name: PP_Prof
+  m_Name: PP_Nyolo
   m_EditorClassIdentifier: 
   debugViews:
     m_Enabled: 1
@@ -299,7 +299,7 @@ MonoBehaviour:
       color: {r: 0, g: 0, b: 0, a: 1}
       center: {x: 0.5, y: 0.5}
       intensity: 1
-      smoothness: 0.705
+      smoothness: 0.785
       roundness: 1
       mask: {fileID: 0}
       opacity: 1
