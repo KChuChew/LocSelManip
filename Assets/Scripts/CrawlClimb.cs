@@ -64,15 +64,28 @@ public class CrawlClimb : MonoBehaviour {
 
         /* TURN PLAYER */
         if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
-            OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
+			OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
 
-            Vector3 rot = player.rotation.eulerAngles;
-            rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
-            player.rotation = Quaternion.Euler(rot.x, rot.y, rot.z);
-            camera.GetComponent<PostProcessingBehaviour>().enabled = true;
+			if (TriggerdR.hit.tag != "Medium") {
+				Debug.Log ("Turning");
+				Vector3 rot = player.rotation.eulerAngles;
+				rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
+				player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
+				//camera.GetComponent<PostProcessingBehaviour>().enabled = true;
+			} else {
+				Debug.Log ("pulling obj");
+				/*Transform rh = transform.GetChild (5);
+				SpringJoint rhsj = rh.GetComponent<SpringJoint> ();
+				rhsj.connectedAnchor = TriggerdR.dank.transform.position;
+				rhsj.connectedBody = TriggerdR.dank.rigidbody;*/
+				Transform rh = transform.GetChild (5);
+				SpringJoint sj = rh.GetComponentInChildren<SpringJoint> ();
+				sj.connectedAnchor = TriggerdR.hit.transform.position;
+				//sj.connectedBody = Tri
+			}
         }
         else {
-            camera.GetComponent<PostProcessingBehaviour>().enabled = false;
+            //camera.GetComponent<PostProcessingBehaviour>().enabled = false;
         }
 
         /* FOLLOWING IS FOR CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING */
