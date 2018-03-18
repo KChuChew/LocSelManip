@@ -26,24 +26,44 @@ public class CrawlClimb : MonoBehaviour {
     Vector3 prev_rhand;
     Vector3 curr_rhand;
 
-    void get_speed(bool move) {
-        if (move) {
-            curr_rdisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-            curr_ldisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
+	public static bool grabbing = false;
+	[SerializeField] private Transform virtual_hand;
+	[SerializeField] private Transform gogo_hand;
 
-            float movementr = curr_rdisp.z - prev_rdisp.z;
-            float movementl = curr_ldisp.z - prev_ldisp.z;
-            if (movementr < 0) {
-                player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementr * 10, ForceMode.Impulse);
-            }
-            else if (movementl < 0) {
-                player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementl * 10, ForceMode.Impulse);
-            }
+	void grab_pull_object() {
+		//Debug.Log (TriggerdR.hit_object_questionmark);
+		if (TriggerdR.hit_object_questionmark) {
+			gogo_hand.GetComponent<SpringJoint>().connectedBody = TriggerdR.hit.rigidbody;
+			gogo_hand.GetComponent<SpringJoint>().connectedAnchor = TriggerdR.hit.transform.position - TriggerdR.hit.point;
+			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = new Vector3(0, 0, 0);
+		}
+	}
 
-            prev_rdisp = curr_rdisp;
-            prev_ldisp = curr_ldisp;
-        }
-    }
+	void turn_player() {
+		Vector3 rot = player.rotation.eulerAngles;
+		rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
+		player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
+		//camera.GetComponent<PostProcessingBehaviour>().enabled = true;
+	}
+
+	void get_speed() {
+		//if (move) {
+		curr_rdisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
+		curr_ldisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
+
+		float movementr = curr_rdisp.z - prev_rdisp.z;
+		float movementl = curr_ldisp.z - prev_ldisp.z;
+		if (movementr < 0) {
+			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementr * 10, ForceMode.Impulse);
+		}
+		else if (movementl < 0) {
+			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementl * 10, ForceMode.Impulse);
+		}
+
+		prev_rdisp = curr_rdisp;
+		prev_ldisp = curr_ldisp;
+		//}
+	}
 
 	void Start () {
         prev_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
@@ -56,37 +76,37 @@ public class CrawlClimb : MonoBehaviour {
     }
 	
 	void FixedUpdate () {
-
+		determine_action();
         /* HAND VELOCITY MOVEMENT */
-        get_speed(true);
+        //get_speed(true);
 
-        curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
+        //curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
 
         /* TURN PLAYER */
-        if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
-			OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
+        //if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
+			//OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
 
-			if (TriggerdR.hit.tag != "Medium") {
+			/*if (TriggerdR.hit.tag != "Medium") {
 				Debug.Log ("Turning");
 				Vector3 rot = player.rotation.eulerAngles;
 				rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
 				player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
 				//camera.GetComponent<PostProcessingBehaviour>().enabled = true;
-			} else {
-				Debug.Log ("pulling obj");
+			} else {*/
+				//Debug.Log ("pulling obj");
 				/*Transform rh = transform.GetChild (5);
 				SpringJoint rhsj = rh.GetComponent<SpringJoint> ();
 				rhsj.connectedAnchor = TriggerdR.dank.transform.position;
 				rhsj.connectedBody = TriggerdR.dank.rigidbody;*/
-				Transform rh = transform.GetChild (5);
-				SpringJoint sj = rh.GetComponentInChildren<SpringJoint> ();
-				sj.connectedAnchor = TriggerdR.hit.transform.position;
+				//Transform rh = transform.GetChild (5);
+				//SpringJoint sj = rh.GetComponentInChildren<SpringJoint> ();
+				//sj.connectedAnchor = TriggerdR.hit.transform.position;
 				//sj.connectedBody = Tri
-			}
-        }
-        else {
+			//}
+        //}
+        //else {
             //camera.GetComponent<PostProcessingBehaviour>().enabled = false;
-        }
+        //}
 
         /* FOLLOWING IS FOR CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING */
         /*
@@ -126,7 +146,31 @@ public class CrawlClimb : MonoBehaviour {
         prev_lhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
         prev_rhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
         */
-        prev_lpos = curr_lpos;
-        prev_rpos = curr_rpos;
+        //prev_lpos = curr_lpos;
+        //prev_rpos = curr_rpos;
     }
+
+	void determine_action() {
+		curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);	
+		if (OVRInput.Get (OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
+		    OVRInput.Get (OVRInput.Axis1D.SecondaryIndexTrigger) == 1) {
+
+			grabbing = true;
+			grab_pull_object();
+		} 
+		else if (OVRInput.Get (OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
+		         OVRInput.Get (OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
+
+			gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
+			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = null;
+			turn_player ();
+		} 
+		else {
+			gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
+			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = null;
+			grabbing = false;
+			get_speed();
+		}
+		prev_rpos = curr_rpos;
+	}
 }

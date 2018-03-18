@@ -5,9 +5,11 @@ using UnityEngine;
 public class TriggerdR : MonoBehaviour {
     public static bool triggered = false;
     public static Vector3 rContact;
-    bool contact_point = false;
-    Vector3 shoulder_pos;
-	public GameObject hit;
+	public GameObject gameobj_hit;
+	public static RaycastHit hit;
+	float gogo_distance = 0;
+	public static bool hit_object_questionmark = false;
+
 
     // OPTIONAL
     [SerializeField] private Transform m_RealHand;
@@ -18,15 +20,15 @@ public class TriggerdR : MonoBehaviour {
     [SerializeField] private float criticalDist = .24f;
     [SerializeField] private float secondCriticalDist = .28f;
 
+	[SerializeField] private Transform virtual_hand;
+
     private void Start() {
-        shoulder_pos = m_Body.position;
-        shoulder_pos.x += 0.2f;
     }
 
     void OnTriggerEnter(Collider other) {
 		//other.gameObject
-		Debug.Log(other.gameObject.tag);
-		hit = other.gameObject;
+		//Debug.Log(other.gameObject.tag);
+		gameobj_hit = other.gameObject;
 
 		//Debug.Log ("nyolo");
         /*if (!contact_point) {
@@ -51,24 +53,40 @@ public class TriggerdR : MonoBehaviour {
 	}
 
     void OnTriggerExit(Collider other) {
-        contact_point = false;
         triggered = false;
         rContact = Vector3.zero;
-		nosing = true;
+		//nosing = true;
     }
 
     void Update() {
+		display_virtual_hand();
         GogoAdjust();   // OPTIONAL
     }
+
+	void display_virtual_hand() {
+		//Debug.Log (CrawlClimb.grabbing);
+		if (!CrawlClimb.grabbing) {
+			if (Physics.Raycast (transform.parent.position, transform.parent.forward, out hit, gogo_distance)) {
+				virtual_hand.position = hit.point;
+				Debug.Log (hit.transform.localPosition);
+				hit_object_questionmark = true;
+			} 
+			else {
+				virtual_hand.position = transform.position;
+				hit_object_questionmark = false;
+			}
+		}
+	}
 
     // OPTIONAL: adjust the hand position
     void GogoAdjust() {
         float distance = Vector3.Magnitude(m_RealHand.position - m_Body.position);
         //Debug.Log(distance);
+		gogo_distance = GogoFunction(distance) + baseDistance;
 		transform.localPosition = new Vector3(
             0f,
             0f,
-            GogoFunction(distance) + baseDistance
+            gogo_distance
         );
     }
 
