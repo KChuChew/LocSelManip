@@ -27,17 +27,19 @@ public class CrawlClimb : MonoBehaviour {
     Vector3 curr_rhand;
 
 	public static bool grabbing = false;
+    private bool pause_action = false;
+    private float timer = 0.0f;
 	[SerializeField] private Transform virtual_hand;
 	[SerializeField] private Transform gogo_hand;
 
-	void grab_pull_object() {
+	/*void grab_pull_object() {
 		//Debug.Log (TriggerdR.hit_object_questionmark);
 		if (TriggerdR.hit_object_questionmark) {
 			gogo_hand.GetComponent<SpringJoint>().connectedBody = TriggerdR.hit.rigidbody;
 			gogo_hand.GetComponent<SpringJoint>().connectedAnchor = TriggerdR.hit.transform.position - TriggerdR.hit.point;
 			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = new Vector3(0, 0, 0);
 		}
-	}
+	}*/
 
 	void turn_player() {
 		Vector3 rot = player.rotation.eulerAngles;
@@ -54,10 +56,10 @@ public class CrawlClimb : MonoBehaviour {
 		float movementr = curr_rdisp.z - prev_rdisp.z;
 		float movementl = curr_ldisp.z - prev_ldisp.z;
 		if (movementr < 0) {
-			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementr * 10, ForceMode.Impulse);
+			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementr * 15, ForceMode.Impulse);
 		}
 		else if (movementl < 0) {
-			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementl * 10, ForceMode.Impulse);
+			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementl * 15, ForceMode.Impulse);
 		}
 
 		prev_rdisp = curr_rdisp;
@@ -149,27 +151,37 @@ public class CrawlClimb : MonoBehaviour {
         //prev_lpos = curr_lpos;
         //prev_rpos = curr_rpos;
     }
-
+    
 	void determine_action() {
 		curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);	
-		if (OVRInput.Get (OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
-		    OVRInput.Get (OVRInput.Axis1D.SecondaryIndexTrigger) == 1) {
+        /*if (OVRInput.Get (OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch) >= 0.95 &&
+		         OVRInput.Get (OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.RTouch) == 0) {*/
+        if(ActionController.grabbing) {
+            pause_action = true;
+        }
+        else if(ActionController.turning) { 
 
-			grabbing = true;
-			grab_pull_object();
-		} 
-		else if (OVRInput.Get (OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
-		         OVRInput.Get (OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
-
-			gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
+			//gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
 			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = null;
 			turn_player ();
+            pause_action = true;
 		} 
-		else {
-			gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
+		else if(ActionController.running){
+            if(pause_action) {
+                if(timer <= 1.0f) {
+                    timer += Time.deltaTime;
+                }
+                else {
+                    pause_action = false;
+                    timer = 0.0f;
+                }
+            }
+            else {
+                get_speed();
+            }
+			//gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
 			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = null;
-			grabbing = false;
-			get_speed();
+			//grabbing = false;
 		}
 		prev_rpos = curr_rpos;
 	}

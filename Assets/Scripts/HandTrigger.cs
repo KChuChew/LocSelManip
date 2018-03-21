@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerdR : MonoBehaviour {
+public class HandTrigger : MonoBehaviour {
     public static bool triggered = false;
     public static Vector3 rContact;
-	public GameObject gameobj_hit;
+	public static GameObject gameobj_hit;
 	public static RaycastHit hit;
 	float gogo_distance = 0;
 	public static bool hit_object_questionmark = false;
@@ -26,44 +26,22 @@ public class TriggerdR : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-		//other.gameObject
-		//Debug.Log(other.gameObject.tag);
 		gameobj_hit = other.gameObject;
-
-		//Debug.Log ("nyolo");
-        /*if (!contact_point) {
-            RaycastHit hit;
-			if (Physics.Raycast (transform.position, transform.forward, out hit)) {
-				if (hit.transform.tag != "player") {
-					/*SpringJoint nyolo = transform.GetComponentInParent<SpringJoint> ();
-					nyolo.connectedBody = hit.rigidbody;
-					nyolo.anchor = transform.GetComponentInParent<Transform> ().position;
-					nyolo.connectedAnchor = hit.point;
-					rContact = hit.point;
-					Debug.Log ("Colliding with OBJECT");
-					dank = hit;
-					nosing = false;
-				}
-			} else {
-				nosing = true;
-			}
-        }
-        triggered = true;
-    	*/
 	}
 
     void OnTriggerExit(Collider other) {
         triggered = false;
         rContact = Vector3.zero;
-		//nosing = true;
+        //nosing = true;
+        gameobj_hit = null;
     }
 
     void Update() {
-		display_virtual_hand();
+		//display_virtual_hand();
         GogoAdjust();   // OPTIONAL
     }
 
-	void display_virtual_hand() {
+	/*void display_virtual_hand() {
 		//Debug.Log (CrawlClimb.grabbing);
 		if (!CrawlClimb.grabbing) {
 			if (Physics.Raycast (transform.parent.position, transform.parent.forward, out hit, gogo_distance)) {
@@ -76,7 +54,7 @@ public class TriggerdR : MonoBehaviour {
 				hit_object_questionmark = false;
 			}
 		}
-	}
+	}*/
 
     // OPTIONAL: adjust the hand position
     void GogoAdjust() {
@@ -95,13 +73,13 @@ public class TriggerdR : MonoBehaviour {
         if (distance < criticalDist)
             return 0;
 
-        float firstDist = (distance - criticalDist) * 20f;
+        float firstDist = (distance - criticalDist) * 30f;
         //Debug.Log("firstdist " + firstDist);
         if (distance < secondCriticalDist)
             return firstDist;
 
         //Debug.Log("secondDist  " + (firstDist + (distance - secondCriticalDist) * 40f));
-        return firstDist + (distance - secondCriticalDist) * 40f;
+        return firstDist + (distance - secondCriticalDist) * 60f;
     }
 
 }
