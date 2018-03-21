@@ -79,90 +79,26 @@ public class CrawlClimb : MonoBehaviour {
 	
 	void FixedUpdate () {
 		determine_action();
-        /* HAND VELOCITY MOVEMENT */
-        //get_speed(true);
-
-        //curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-
-        /* TURN PLAYER */
-        //if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 &&
-			//OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0) {
-
-			/*if (TriggerdR.hit.tag != "Medium") {
-				Debug.Log ("Turning");
-				Vector3 rot = player.rotation.eulerAngles;
-				rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
-				player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
-				//camera.GetComponent<PostProcessingBehaviour>().enabled = true;
-			} else {*/
-				//Debug.Log ("pulling obj");
-				/*Transform rh = transform.GetChild (5);
-				SpringJoint rhsj = rh.GetComponent<SpringJoint> ();
-				rhsj.connectedAnchor = TriggerdR.dank.transform.position;
-				rhsj.connectedBody = TriggerdR.dank.rigidbody;*/
-				//Transform rh = transform.GetChild (5);
-				//SpringJoint sj = rh.GetComponentInChildren<SpringJoint> ();
-				//sj.connectedAnchor = TriggerdR.hit.transform.position;
-				//sj.connectedBody = Tri
-			//}
-        //}
-        //else {
-            //camera.GetComponent<PostProcessingBehaviour>().enabled = false;
-        //}
-
-        /* FOLLOWING IS FOR CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING CLIMBING */
-        /*
-        Vector3 rvel = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
-        
-        if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) >= 0.95 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger) >= 0.95) {
-            if (TriggerdL.triggered) {
-                //player.GetComponent<Collider>().isTrigger = true;
-                //Debug.Log("Triggered Left Hand");
-                //left_hand.position = TriggerdL.lContact;
-                Debug.Log(prev_lhand - OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch));
-                player.GetComponent<Rigidbody>().useGravity = false;
-                player.GetComponent<Rigidbody>().isKinematic = true;
-
-                player.transform.position += prev_lhand - OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
-                //Debug.Log(OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch));
-            }
-        }
-        else if(OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger) >= 0.95 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) >= 0.95) {
-            if(TriggerdR.triggered) {
-                //player.GetComponent<Collider>().isTrigger = true;
-                //Debug.Log("Triggerd Right Hand");
-                player.GetComponent<Rigidbody>().useGravity = false;
-                player.GetComponent<Rigidbody>().isKinematic = true;
-                //right_hand.position = TriggerdR.rContact;
-                player.transform.position += prev_rhand - OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-
-                //OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-                //player.transform.position += OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-
-            }
-        }
-        else {
-            player.GetComponent<Rigidbody>().useGravity = true;
-            player.GetComponent<Rigidbody>().isKinematic = false;
-        }
-        prev_lhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
-        prev_rhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-        */
-        //prev_lpos = curr_lpos;
-        //prev_rpos = curr_rpos;
     }
     
+    void focus_FOV() {
+
+        if(ActionController.turning) {
+            transform.GetChild(1).GetComponent<PostProcessingBehaviour>().enabled = true;
+        }
+        else {
+            transform.GetChild(1).GetComponent<PostProcessingBehaviour>().enabled = false;
+        }
+    }
+
 	void determine_action() {
-		curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);	
-        /*if (OVRInput.Get (OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch) >= 0.95 &&
-		         OVRInput.Get (OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.RTouch) == 0) {*/
+		curr_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
+        focus_FOV();
         if(ActionController.grabbing) {
             pause_action = true;
         }
         else if(ActionController.turning) { 
 
-			//gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
-			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = null;
 			turn_player ();
             pause_action = true;
 		} 
@@ -179,9 +115,6 @@ public class CrawlClimb : MonoBehaviour {
             else {
                 get_speed();
             }
-			//gogo_hand.GetComponent<SpringJoint>().connectedBody = null;
-			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = null;
-			//grabbing = false;
 		}
 		prev_rpos = curr_rpos;
 	}
