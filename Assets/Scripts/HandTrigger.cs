@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HandTrigger : MonoBehaviour {
-    public static bool triggered = false;
+
     public static Vector3 rContact;
 	public static GameObject gameobj_hit;
 	public static RaycastHit hit;
@@ -30,36 +30,17 @@ public class HandTrigger : MonoBehaviour {
 	}
 
     void OnTriggerExit(Collider other) {
-        triggered = false;
         rContact = Vector3.zero;
-        //nosing = true;
         gameobj_hit = null;
     }
 
     void Update() {
-		//display_virtual_hand();
         GogoAdjust();   // OPTIONAL
     }
-
-	/*void display_virtual_hand() {
-		//Debug.Log (CrawlClimb.grabbing);
-		if (!CrawlClimb.grabbing) {
-			if (Physics.Raycast (transform.parent.position, transform.parent.forward, out hit, gogo_distance)) {
-				virtual_hand.position = hit.point;
-				Debug.Log (hit.transform.localPosition);
-				hit_object_questionmark = true;
-			} 
-			else {
-				virtual_hand.position = transform.position;
-				hit_object_questionmark = false;
-			}
-		}
-	}*/
 
     // OPTIONAL: adjust the hand position
     void GogoAdjust() {
         float distance = Vector3.Magnitude(m_RealHand.position - m_Body.position);
-        //Debug.Log(distance);
 		gogo_distance = GogoFunction(distance) + baseDistance;
 		transform.localPosition = new Vector3(
             0f,
@@ -74,11 +55,9 @@ public class HandTrigger : MonoBehaviour {
             return 0;
 
         float firstDist = (distance - criticalDist) * 30f;
-        //Debug.Log("firstdist " + firstDist);
         if (distance < secondCriticalDist)
             return firstDist;
 
-        //Debug.Log("secondDist  " + (firstDist + (distance - secondCriticalDist) * 40f));
         return firstDist + (distance - secondCriticalDist) * 60f;
     }
 

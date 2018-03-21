@@ -32,24 +32,13 @@ public class CrawlClimb : MonoBehaviour {
 	[SerializeField] private Transform virtual_hand;
 	[SerializeField] private Transform gogo_hand;
 
-	/*void grab_pull_object() {
-		//Debug.Log (TriggerdR.hit_object_questionmark);
-		if (TriggerdR.hit_object_questionmark) {
-			gogo_hand.GetComponent<SpringJoint>().connectedBody = TriggerdR.hit.rigidbody;
-			gogo_hand.GetComponent<SpringJoint>().connectedAnchor = TriggerdR.hit.transform.position - TriggerdR.hit.point;
-			//gogo_hand.GetComponent<SpringJoint>().connectedAnchor = new Vector3(0, 0, 0);
-		}
-	}*/
-
 	void turn_player() {
 		Vector3 rot = player.rotation.eulerAngles;
 		rot.y -= (curr_rpos.x - prev_rpos.x) * 180;
 		player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
-		//camera.GetComponent<PostProcessingBehaviour>().enabled = true;
 	}
 
 	void get_speed() {
-		//if (move) {
 		curr_rdisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
 		curr_ldisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
 
@@ -64,7 +53,6 @@ public class CrawlClimb : MonoBehaviour {
 
 		prev_rdisp = curr_rdisp;
 		prev_ldisp = curr_ldisp;
-		//}
 	}
 
 	void Start () {
