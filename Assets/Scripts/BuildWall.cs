@@ -7,7 +7,8 @@ public class BuildWall : MonoBehaviour {
 	public Transform prefab;
     RaycastHit hit;
 	int numPoints = 24;
-	Vector3 centerPos = new Vector3(0, (float)0.5, 0);
+	[SerializeField] private Transform centerPos;
+	//Vector3 centerPos = new Vector3(0, (float)0.5, 0);
 
 	double initAngle = 90;
 	int maxHeight = 15;
@@ -26,7 +27,7 @@ public class BuildWall : MonoBehaviour {
 				float x = (float)(Mathf.Cos (angle) * 7.5);
 				float y = (float)(Mathf.Sin (angle) * 7.5); 
 				// calc height and rotation of each brick
-				Vector3 pos = new Vector3 (x, height, y) + centerPos;
+				Vector3 pos = new Vector3 (x, height, y) + centerPos.position;
 				Vector3 rot = new Vector3 (0, (float)initAngle, 0);
 				Instantiate (prefab, pos, Quaternion.Euler (rot));
 				// each brick placed should rotate -15 degrees from previous for circular effect
@@ -51,7 +52,7 @@ public class BuildWall : MonoBehaviour {
 				float x = (float)(Mathf.Cos (angle) * 7.5);
 				float y = (float)(Mathf.Sin (angle) * 7.5); 
 				// calc height and rotation of each brick
-				Vector3 pos = new Vector3 (x, height, y) + centerPos;
+				Vector3 pos = new Vector3 (x, height, y) + centerPos.position;
 				Vector3 rot = new Vector3 (0, (float)initAngle, 0);
 				Instantiate (prefab, pos, Quaternion.Euler (rot));
 				//Instantiate (prefab, pos, Quaternion.identity);
@@ -62,9 +63,4 @@ public class BuildWall : MonoBehaviour {
 			initAngle = 82.5;
 		}
 	}
-
-	// Update is called once per frame
-	/*void Update () {
-
-    }*/
 }

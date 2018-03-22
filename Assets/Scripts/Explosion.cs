@@ -25,7 +25,7 @@ public class Explosion : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision col) {
-		if (col.gameObject.tag == "Wall") {
+		if (col.gameObject.tag != "Untagged") {
 			Debug.Log ("Explode");
 			explode = true;
 		} else {

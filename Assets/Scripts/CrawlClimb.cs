@@ -93,7 +93,7 @@ public class CrawlClimb : MonoBehaviour {
 	}*/
 	float previous_right_distance = 0f;
 	float previous_left_distance = 0f;
-	float distance_threshold = 0.0002f;
+	float distance_threshold = 0.0005f;
 
 	void get_speed() {
 		Vector3 temp_right_pos = right_hand.position - player.position;
@@ -122,8 +122,9 @@ public class CrawlClimb : MonoBehaviour {
 		Vector3 move_r_direction = temp_right_pos.normalized;
 		Vector3 move_l_direction = temp_left_pos.normalized;
 
-		if (move_right_distance < 0 || move_left_distance < 0)
-			return;
+
+		/*if (move_right_distance < 0 || move_left_distance < 0)
+			return;*/
 
 		if (move_right_distance > distance_threshold) {
 			player.position += move_r_direction * 7f * (previous_right_distance - current_right_distance);
