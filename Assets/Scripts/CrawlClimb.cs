@@ -28,7 +28,7 @@ public class CrawlClimb : MonoBehaviour {
 
 	public static bool grabbing = false;
     private bool pause_action = false;
-    private float timer = 0.0f;
+    private float timer = 0.0002f;
 	[SerializeField] private Transform virtual_hand;
 	[SerializeField] private Transform gogo_hand;
 
@@ -38,21 +38,45 @@ public class CrawlClimb : MonoBehaviour {
 		player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
 	}
 
+	bool first_hand_position = true;
+	Vector3 last_controller_position;
+	//float distance_moved = 0f;
+	float distance_threshold = 0.0f;
+	Vector3 move_direction;
+	float previous_distance = 0f;
+
 	void get_speed() {
-		curr_rdisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-		curr_ldisp = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
+		Vector3 temp_right_pos = right_hand.position - player.position;
+		temp_right_pos.y = 0;
 
-		float movementr = curr_rdisp.z - prev_rdisp.z;
-		float movementl = curr_ldisp.z - prev_ldisp.z;
-		if (movementr < 0) {
-			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementr * 15, ForceMode.Impulse);
-		}
-		else if (movementl < 0) {
-			player.GetComponent<Rigidbody>().AddForce(player.transform.forward * -movementl * 15, ForceMode.Impulse);
+		float current_distance = Vector3.Magnitude (temp_right_pos);
+		/*Debug.Log ("current distance");
+		Debug.Log (current_distance);
+		Debug.Log ("previous distance");
+		Debug.Log (previous_distance);*/
+		//Debug.Log ("curr prev sub");
+		//Debug.Log (1000*(previous_distance - current_distance));
+
+		if (first_hand_position) {
+			previous_distance = current_distance;
+			move_direction = temp_right_pos.normalized;
+			first_hand_position = false;
+			return;
 		}
 
-		prev_rdisp = curr_rdisp;
-		prev_ldisp = curr_ldisp;
+		if(current_distance > previous_distance) {
+			first_hand_position = true;
+			return;
+		}
+
+		float move_distance = previous_distance - current_distance;
+		Debug.Log (move_distance);
+		//distance_moved += move_distance;
+
+		if (move_distance > distance_threshold) {
+			player.position += move_direction * 5f * (previous_distance - current_distance);
+		}
+		previous_distance = current_distance;;
 	}
 
 	void Start () {
@@ -63,10 +87,6 @@ public class CrawlClimb : MonoBehaviour {
 
         prev_rhand = right_hand.transform.localPosition;
         prev_lhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
-    }
-	
-	void FixedUpdate () {
-		determine_action();
     }
     
     void focus_FOV() {
@@ -105,5 +125,9 @@ public class CrawlClimb : MonoBehaviour {
             }
 		}
 		prev_rpos = curr_rpos;
+	}
+
+	void Update () {
+		determine_action();
 	}
 }
