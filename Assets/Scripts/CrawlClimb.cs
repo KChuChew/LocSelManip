@@ -28,7 +28,7 @@ public class CrawlClimb : MonoBehaviour {
 
 	public static bool grabbing = false;
     private bool pause_action = false;
-    private float timer = 0.0002f;
+    private float timer = 0.0f;
 	[SerializeField] private Transform virtual_hand;
 	[SerializeField] private Transform gogo_hand;
 
@@ -38,45 +38,101 @@ public class CrawlClimb : MonoBehaviour {
 		player.rotation = Quaternion.Euler (rot.x, rot.y, rot.z);
 	}
 
-	bool first_hand_position = true;
+	/*bool right_hand_position_init = true;
+	bool left_hand_position_init = true;
 	Vector3 last_controller_position;
-	//float distance_moved = 0f;
 	float distance_threshold = 0.0f;
 	Vector3 move_direction;
-	float previous_distance = 0f;
+	float previous_right_distance = 0f;
+	float previous_left_distance = 0f;
 
 	void get_speed() {
 		Vector3 temp_right_pos = right_hand.position - player.position;
 		temp_right_pos.y = 0;
+		Vector3 temp_left_pos = left_hand.position - player.position;
+		temp_left_pos.y = 0;
 
-		float current_distance = Vector3.Magnitude (temp_right_pos);
-		/*Debug.Log ("current distance");
-		Debug.Log (current_distance);
-		Debug.Log ("previous distance");
-		Debug.Log (previous_distance);*/
-		//Debug.Log ("curr prev sub");
-		//Debug.Log (1000*(previous_distance - current_distance));
+		float current_right_distance = Vector3.Magnitude (temp_right_pos);
+		float current_left_distance = Vector3.Magnitude (temp_left_pos);
 
-		if (first_hand_position) {
-			previous_distance = current_distance;
+		if (right_hand_position_init) {
+			previous_right_distance = current_right_distance;
 			move_direction = temp_right_pos.normalized;
-			first_hand_position = false;
+			right_hand_position_init = false;
+			left_hand_position_init = false;
+			return;
+		} 
+		else if (left_hand_position_init) {
+			previous_left_distance = current_left_distance;
+			move_direction = temp_left_pos.normalized;
+			left_hand_position_init = false;
+			right_hand_position_init = false;
 			return;
 		}
 
-		if(current_distance > previous_distance) {
-			first_hand_position = true;
+		if (current_right_distance > previous_right_distance) {
+			right_hand_position_init = true;
+			return;
+		} 
+		else if (current_left_distance > previous_left_distance) {
+			left_hand_position_init = true;
 			return;
 		}
 
-		float move_distance = previous_distance - current_distance;
-		Debug.Log (move_distance);
-		//distance_moved += move_distance;
+		float move_right_distance = previous_right_distance - current_right_distance;
+		float move_left_distance = previous_left_distance - current_left_distance;
 
-		if (move_distance > distance_threshold) {
-			player.position += move_direction * 5f * (previous_distance - current_distance);
+		if (move_right_distance > distance_threshold) {
+			player.position += move_direction * 5f * (previous_right_distance - current_right_distance);
 		}
-		previous_distance = current_distance;;
+		else if(move_left_distance > distance_threshold) {
+			//player.position += move_direction * 5f * (previous_left_distance - current_left_distance);
+		}
+		previous_right_distance = current_right_distance;
+		previous_left_distance = current_left_distance;;
+	}*/
+	float previous_right_distance = 0f;
+	float previous_left_distance = 0f;
+	float distance_threshold = 0.0002f;
+
+	void get_speed() {
+		Vector3 temp_right_pos = right_hand.position - player.position;
+		temp_right_pos.y = 0;
+		Vector3 temp_left_pos = left_hand.position - player.position;
+		temp_left_pos.y = 0;
+
+		float current_right_distance = Vector3.Magnitude (temp_right_pos);
+		float current_left_distance = Vector3.Magnitude (temp_left_pos);
+
+		float move_right_distance = previous_right_distance - current_right_distance;
+		float move_left_distance = previous_left_distance - current_left_distance;
+		Debug.Log ("right dist");
+		Debug.Log (move_right_distance * 10000);
+		Debug.Log ("left dist");
+		Debug.Log (move_left_distance * 10000);
+		/*Debug.Log ("right prev");
+		Debug.Log (previous_right_distance);
+		Debug.Log ("right curr");
+		Debug.Log (current_right_distance);*/
+		/*Debug.Log ("left prev");
+		Debug.Log (previous_left_distance);
+		Debug.Log ("left curr");
+		Debug.Log (current_left_distance);
+*/
+		Vector3 move_r_direction = temp_right_pos.normalized;
+		Vector3 move_l_direction = temp_left_pos.normalized;
+
+		/*if (move_right_distance < 0 || move_left_distance < 0)
+			return;*/
+
+		if (move_right_distance > distance_threshold) {
+			player.position += move_r_direction * 7f * (previous_right_distance - current_right_distance);
+		}
+		else if(move_left_distance > distance_threshold) {
+			player.position += move_l_direction * 7f * (previous_left_distance - current_left_distance);
+		}
+		previous_right_distance = current_right_distance;
+		previous_left_distance = current_left_distance;
 	}
 
 	void Start () {
@@ -87,6 +143,7 @@ public class CrawlClimb : MonoBehaviour {
 
         prev_rhand = right_hand.transform.localPosition;
         prev_lhand = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
+
     }
     
     void focus_FOV() {
