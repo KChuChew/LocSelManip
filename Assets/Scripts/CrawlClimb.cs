@@ -106,24 +106,24 @@ public class CrawlClimb : MonoBehaviour {
 
 		float move_right_distance = previous_right_distance - current_right_distance;
 		float move_left_distance = previous_left_distance - current_left_distance;
-		Debug.Log ("right dist");
+		/*Debug.Log ("right dist");
 		Debug.Log (move_right_distance * 10000);
 		Debug.Log ("left dist");
 		Debug.Log (move_left_distance * 10000);
-		/*Debug.Log ("right prev");
+		Debug.Log ("right prev");
 		Debug.Log (previous_right_distance);
 		Debug.Log ("right curr");
-		Debug.Log (current_right_distance);*/
-		/*Debug.Log ("left prev");
+		Debug.Log (current_right_distance);
+		Debug.Log ("left prev");
 		Debug.Log (previous_left_distance);
 		Debug.Log ("left curr");
-		Debug.Log (current_left_distance);
-*/
+		Debug.Log (current_left_distance);*/
+
 		Vector3 move_r_direction = temp_right_pos.normalized;
 		Vector3 move_l_direction = temp_left_pos.normalized;
 
-		/*if (move_right_distance < 0 || move_left_distance < 0)
-			return;*/
+		if (move_right_distance < 0 || move_left_distance < 0)
+			return;
 
 		if (move_right_distance > distance_threshold) {
 			player.position += move_r_direction * 7f * (previous_right_distance - current_right_distance);
@@ -134,6 +134,21 @@ public class CrawlClimb : MonoBehaviour {
 		previous_right_distance = current_right_distance;
 		previous_left_distance = current_left_distance;
 	}
+	/*void get_speed() {
+		curr_rdisp = OVRInput.GetLocalControllerPosition (OVRInput.Controller.RTouch);
+		curr_ldisp = OVRInput.GetLocalControllerPosition (OVRInput.Controller.LTouch);
+		float movementr = curr_rdisp.z - prev_rdisp.z;
+		float movementl = curr_ldisp.z - prev_ldisp.z;
+		if (movementr < 0) {
+			player.GetComponent<Rigidbody> ().AddForce (player.transform.forward * -movementr * 15, ForceMode.Impulse);
+		}
+		else if (movementl < 0) {
+			player.GetComponent<Rigidbody> ().AddForce (player.transform.forward * -movementl * 15, ForceMode.Impulse);
+		}
+
+		prev_rdisp = curr_rdisp;
+		prev_ldisp = curr_ldisp;
+	}*/
 
 	void Start () {
         prev_rpos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
